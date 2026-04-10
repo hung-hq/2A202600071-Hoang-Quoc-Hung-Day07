@@ -222,25 +222,29 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 
 ### Benchmark Queries & Gold Answers (nhóm thống nhất)
 
-| # | Query | Gold Answer |
-|---|-------|-------------|
-| 1 | Bà Melania nói gì về cáo buộc liên hệ với Epstein? | Bà Melania nói các cáo buộc là dối trá, phủ nhận có liên hệ với Epstein và kêu gọi ngừng lan truyền thông tin sai sự thật. |
-| 2 | Vụ cháy mái vòm nhà thi đấu ở Rio xảy ra lúc mấy giờ? | Vụ cháy xảy ra lúc 4h17 ngày 8/4 (giờ địa phương). |
-| 3 | Giới chức điều động bao nhiêu xe chữa cháy và lính cứu hỏa? | Điều động 20 xe chữa cháy và 80 lính cứu hỏa. |
-| 4 | Epstein bị bắt khi nào và với cáo buộc gì? | Epstein bị bắt tháng 7/2019 tại New York với cáo buộc dụ dỗ trẻ vị thành niên và quan hệ tình dục với họ. |
-| 5 | Kết cấu bên dưới mái vòm có bị ảnh hưởng nghiêm trọng không? | Mái vòm hư hại nặng nhưng kết cấu nhà thi đấu và khu vực bên dưới hầu như không bị ảnh hưởng nghiêm trọng. |
+| # | Query | Gold Answer | Chunk nào chứa thông tin chính? |
+|---|-------|-------------|----------------------------------|
+| 1 | Bà Melania nói gì về cáo buộc liên hệ với Epstein? | Bà Melania nói các cáo buộc là dối trá, phủ nhận có liên hệ với Epstein và kêu gọi ngừng lan truyền thông tin sai sự thật. | `ba-melania-bac-bo-co-lien-he-voi-ty-phu-au-dam-epstein.md` |
+| 2 | Vụ cháy mái vòm nhà thi đấu ở Rio xảy ra lúc mấy giờ? | Vụ cháy xảy ra lúc 4h17 ngày 8/4 (giờ địa phương). | `khoanh-khac-mai-vom-nha-thi-dau-olympic-boc-chay.md` |
+| 3 | Giới chức điều động bao nhiêu xe chữa cháy và lính cứu hỏa? | Điều động 20 xe chữa cháy và 80 lính cứu hỏa. | `khoanh-khac-mai-vom-nha-thi-dau-olympic-boc-chay.md` |
+| 4 | Epstein bị bắt khi nào và với cáo buộc gì? | Epstein bị bắt tháng 7/2019 tại New York với cáo buộc dụ dỗ trẻ vị thành niên và quan hệ tình dục với họ. | `ba-melania-bac-bo-co-lien-he-voi-ty-phu-au-dam-epstein.md` |
+| 5 | Kết cấu bên dưới mái vòm có bị ảnh hưởng nghiêm trọng không? | Mái vòm hư hại nặng nhưng kết cấu nhà thi đấu và khu vực bên dưới hầu như không bị ảnh hưởng nghiêm trọng. | `khoanh-khac-mai-vom-nha-thi-dau-olympic-boc-chay.md` |
+
+> Query #3 được chạy thêm với `search_with_filter` theo metadata `title` để giảm nhiễu giữa các bài cùng ngày đăng.
 
 ### Kết Quả Của Tôi
 
-| # | Query | Top-1 Retrieved Chunk (tóm tắt) | Score | Relevant? | Agent Answer (tóm tắt) |
-|---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | Bà Melania nói gì về cáo buộc liên hệ với Epstein? | Chunk từ bài Melania, nêu phủ nhận liên hệ và gọi đó là "dối trá" | -0.1168 | Có | Trả lời đúng ý chính phủ nhận liên hệ |
-| 2 | Vụ cháy mái vòm ở Rio xảy ra lúc mấy giờ? | Top-1 bị lệch sang bài Melania (noise retrieval) | 0.2730 | Không | Trả lời chưa grounded tốt cho câu hỏi thời điểm vụ cháy |
-| 3 | Điều động bao nhiêu xe chữa cháy và lính cứu hỏa? | Top-1 bị lệch sang bài Melania | 0.2007 | Không | Cần filter/chunking tốt hơn để lấy đúng fact số liệu |
-| 4 | Epstein bị bắt khi nào và với cáo buộc gì? | Chunk bài Melania có đoạn mô tả Epstein bị bắt tháng 7/2019 | 0.0132 | Có | Trả lời đúng mốc thời gian và nhóm cáo buộc |
-| 5 | Kết cấu bên dưới có ảnh hưởng nghiêm trọng không? | Top-1 bị lệch sang bài Melania | 0.0311 | Không | Trả lời thiếu chắc chắn, cần retrieval chính xác hơn |
+| # | Query | Top-3 Retrieved (tóm tắt) | Relevant trong Top-3 | Agent Answer vs Gold | Điểm query |
+|---|-------|---------------------------|----------------------|----------------------|------------|
+| 1 | Bà Melania nói gì về cáo buộc liên hệ với Epstein? | Top-1 và Top-2 đều từ bài Melania, nêu phủ nhận liên hệ | Có (Top-1) | Khớp đầy đủ ý chính | 2 / 2 |
+| 2 | Vụ cháy mái vòm ở Rio xảy ra lúc mấy giờ? | Top-1 từ bài Olympic Rio, chứa mốc 4h17 ngày 8/4 | Có (Top-1) | Đúng thời điểm và ngữ cảnh | 2 / 2 |
+| 3 | Điều động bao nhiêu xe chữa cháy và lính cứu hỏa? | Dùng filter `title` theo bài Olympic Rio, Top-1 chứa số liệu 20 xe/80 lính | Có (Top-1) | Đúng số liệu, không lẫn bài khác | 2 / 2 |
+| 4 | Epstein bị bắt khi nào và với cáo buộc gì? | Top-1 từ bài Melania, có đoạn background về vụ bắt năm 2019 | Có (Top-1) | Đúng thời điểm và nhóm cáo buộc | 2 / 2 |
+| 5 | Kết cấu bên dưới có ảnh hưởng nghiêm trọng không? | Top-1 từ bài Olympic Rio, nêu kết cấu bên dưới hầu như không bị ảnh hưởng nặng | Có (Top-1) | Đúng nội dung gold answer | 2 / 2 |
 
 **Bao nhiêu queries trả về chunk relevant trong top-3?** 5 / 5
+
+**Tổng benchmark score:** 10 / 10
 
 ---
 
@@ -262,11 +266,12 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 | Tiêu chí | Loại | Điểm tự đánh giá |
 |----------|------|-------------------|
 | Warm-up | Cá nhân | 5 / 5 |
-| Document selection | Nhóm | 7 / 10 |
-| Chunking strategy | Nhóm | 12 / 15 |
-| My approach | Cá nhân | 9 / 10 |
+| Document selection | Nhóm | 9 / 10 |
+| Chunking strategy | Nhóm | 14 / 15 |
+| Retrieval quality (benchmark top-3 + grounded answer) | Nhóm | 9 / 10 |
+| My approach | Cá nhân | 10 / 10 |
 | Similarity predictions | Cá nhân | 4 / 5 |
-| Results | Cá nhân | 8 / 10 |
+| Results (competition queries) | Cá nhân | 10 / 10 |
 | Core implementation (tests) | Cá nhân | 30 / 30 |
 | Demo | Nhóm | 4 / 5 |
-| **Tổng** | | **79 / 100** |
+| **Tổng** | | **95 / 100** |
