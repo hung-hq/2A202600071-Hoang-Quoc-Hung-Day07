@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+from typing import Optional
 
 LOCAL_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
@@ -46,12 +47,17 @@ class LocalEmbedder:
 class OpenAIEmbedder:
     """OpenAI embeddings API-backed embedder."""
 
-    def __init__(self, model_name: str = OPENAI_EMBEDDING_MODEL) -> None:
+    def __init__(
+        self,
+        model_name: str = OPENAI_EMBEDDING_MODEL,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+    ) -> None:
         from openai import OpenAI
 
         self.model_name = model_name
         self._backend_name = model_name
-        self.client = OpenAI()
+        self.client = OpenAI(api_key=api_key, base_url=base_url)
 
     def __call__(self, text: str) -> list[float]:
         response = self.client.embeddings.create(model=self.model_name, input=text)

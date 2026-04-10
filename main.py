@@ -19,12 +19,16 @@ from src.models import Document
 from src.store import EmbeddingStore
 
 SAMPLE_FILES = [
-    "data/python_intro.txt",
-    "data/vector_store_notes.md",
-    "data/rag_system_design.md",
-    "data/customer_support_playbook.txt",
-    "data/chunking_experiment_report.md",
-    "data/vi_retrieval_notes.md",
+    "data/ba-melania-bac-bo-co-lien-he-voi-ty-phu-au-dam-epstein.md",
+    "data/khoanh-khac-mai-vom-nha-thi-dau-olympic-boc-chay.md",
+    "data/FBI-bat-nguoi.md",
+    "data/hunterBiden.md",
+    "data/Iran.md",
+    "data/netanyahu.txt",
+    "data/Quan-chuc-Iran-Bac-bo-uranium.md",
+    "data/thach-thuc-mo-lai-eo-bien-hormuz.md",
+    "data/tinh-nang-uav-hon-200-trieu-usd-cua-my-mat-tich-gan-iran.md",
+    "data/ukraine.txt",
 ]
 
 
@@ -64,7 +68,7 @@ def demo_llm(prompt: str) -> str:
 
 def run_manual_demo(question: str | None = None, sample_files: list[str] | None = None) -> int:
     files = sample_files or SAMPLE_FILES
-    query = question or "Summarize the key information from the loaded files."
+    query = question or "olympic boc chay"
 
     print("=== Manual File Test ===")
     print("Accepted file types: .md, .txt")
@@ -83,8 +87,8 @@ def run_manual_demo(question: str | None = None, sample_files: list[str] | None 
     for doc in docs:
         print(f"  - {doc.id}: {doc.metadata['source']}")
 
-    load_dotenv(override=False)
-    provider = os.getenv(EMBEDDING_PROVIDER_ENV, "mock").strip().lower()
+    load_dotenv(dotenv_path="../dev.env", override=False)
+    provider = os.getenv(EMBEDDING_PROVIDER_ENV, "openai").strip().lower()
     if provider == "local":
         try:
             embedder = LocalEmbedder(model_name=os.getenv("LOCAL_EMBEDDING_MODEL", LOCAL_EMBEDDING_MODEL))
@@ -92,7 +96,7 @@ def run_manual_demo(question: str | None = None, sample_files: list[str] | None 
             embedder = _mock_embed
     elif provider == "openai":
         try:
-            embedder = OpenAIEmbedder(model_name=os.getenv("OPENAI_EMBEDDING_MODEL", OPENAI_EMBEDDING_MODEL))
+            embedder = OpenAIEmbedder(model_name=os.getenv("OPENAI_EMBEDDING_MODEL", OPENAI_EMBEDDING_MODEL), api_key=os.getenv("GITHUB_TOKEN"), base_url="https://models.inference.ai.azure.com/")
         except Exception:
             embedder = _mock_embed
     else:
